@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "pytorch-dice-loss"
+version = "0.1.0"
+description = "Dice Loss in PyTorch for NLP"
+authors = ["Chenghao Mou <mouchenghao@gmail.com>"]
+license = "Apache License, Version 2.0"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+torch = "^1.9.0"
+einops = "^0.3.2"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

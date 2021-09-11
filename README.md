@@ -1,8 +1,15 @@
 # pytorch-dice-loss
+[![PyPI version](https://badge.fury.io/py/pytorch-dice-loss.svg)](https://badge.fury.io/py/pytorch-dice-loss)
+
 Re-implementation of [Dice Loss for NLP Tasks](https://github.com/ShannonAI/dice_loss_for_NLP):
 
 - Added more comments
 - Simplified some computation
+
+## Installation
+```shell
+pip install pytorch-dice-loss
+```
 
 ## Usage
 ```python

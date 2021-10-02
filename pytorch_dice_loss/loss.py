@@ -17,25 +17,26 @@ class DiceLoss(nn.Module):
         reduction: Optional[str] = "mean",
     ) -> None:
         """
-        A modified Dice Loss for imbalanced data in NLP.
+        A modified Dice Loss for imbalanced data in NLP. Reference: https://arxiv.org/abs/1911.02855;
 
         Parameters
         ----------
         smooth : Optional[float], optional
-            Smoothing parameter (𝛾) for the [Sørensen–Dice coefficient](https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient), by default 1
+            Smoothing parameter (𝛾) for the [Sørensen–Dice coefficient](https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient), by default 1.
         square_denominator : Optional[bool], optional
             To square the denominator (p and y) or not, by default False
         with_logits : Optional[bool], optional
-            Whether the input is raw logits or softmaxed probas, by default True
+            Whether the inputs is raw logits or softmaxed probas, by default True
         ohem_ratio : float, optional
             Overwhelming ratio (#negative/#positive), by default 0.0. I don't seem to find this in the paper and why this is not 1 by default is beyond me.
             The only thing I can find close to this is in Table 1, which (#negative/#positive) is actually different from what is in the implementation (#positive/#negative).
         alpha : float, optional
-            Hyperparameter for controling the decaying factor (1-p), leading to a (1-p)^⍺, by default 0.0
+            Hyperparameter for controling the decaying factor (1-p), leading to a (1-p)^⍺ decaying rate, by default 0.0 (no decay)
         reduction : Optional[str], optional
             Common parameter for loss computation, one of {"mean", "sum", None}, by default "mean"
         """
-        super().__init__()
+        super(DiceLoss, self).__init__()
+        
         self.reduction = reduction
         self.with_logits = with_logits
         self.smooth = smooth
@@ -44,14 +45,14 @@ class DiceLoss(nn.Module):
         self.alpha = alpha
 
     def forward(
-        self, input: Tensor, target: Tensor, mask: Optional[Tensor] = None
+        self, inputs: Tensor, target: Tensor, mask: Optional[Tensor] = None
     ) -> Tensor:
         """
-        Calculate the self-adjusting Dice Loss for the given input and target.
+        Calculate the self-adjusting Dice Loss for the given inputs and target.
 
         Parameters
         ----------
-        input : Tensor
+        inputs : Tensor
             [Batch size, sequence size, class size]
         target : Tensor
             [Batch size, sequence size]
@@ -66,72 +67,72 @@ class DiceLoss(nn.Module):
         Examples
         --------
         >>> loss = DiceLoss(with_logits=False, reduction='mean')
-        >>> input = torch.FloatTensor(
+        >>> inputs = torch.FloatTensor(
         ...     [[[1, 0, 0], [0, 0, 1], [0, 0, 1], [0, 1, 0], [1, 0, 0]]]
         ... )
-        >>> input.requires_grad = True
+        >>> inputs.requires_grad = True
         >>> target = torch.LongTensor([[0, 2, 2, 1, 0]])
         >>> output = loss(
-        ...     input, target, mask=torch.BoolTensor([[True, True, True, True, True]])
+        ...     inputs, target, mask=torch.BoolTensor([[True, True, True, True, True]])
         ... )
         >>> assert output.item()==1.81333327293396, output.item()
         >>> loss = DiceLoss(with_logits=False, reduction='mean')
-        >>> input = torch.FloatTensor(
+        >>> inputs = torch.FloatTensor(
         ...     [[[0, 0.5, 0.5], [0, 0.5, 0.5], [0, 0.5, 0.5], [0, 0.5, 0.5], [0, 0.5, 0.5]]]
         ... )
-        >>> input.requires_grad = True
+        >>> inputs.requires_grad = True
         >>> target = torch.LongTensor([[0, 2, 2, 1, 0]])
         >>> output = loss(
-        ...     input, target, mask=torch.BoolTensor([[True, True, True, True, True]])
+        ...     inputs, target, mask=torch.BoolTensor([[True, True, True, True, True]])
         ... )
         >>> assert output.item()==2.1454546451568604, output.item()
         >>> loss = DiceLoss(with_logits=True, reduction='mean')
-        >>> input = torch.FloatTensor(
+        >>> inputs = torch.FloatTensor(
         ...     [[[0, 0.5, 0], [0, 0.5, 0], [0, 0.5, 0], [0, 0.5, 0], [0.5, 0.5, 0]]]
         ... )
-        >>> input.requires_grad = True
+        >>> inputs.requires_grad = True
         >>> target = torch.LongTensor([[0, 2, 2, 1, 0]])
         >>> output = loss(
-        ...     input, target, mask=torch.BoolTensor([[True, True, True, True, True]])
+        ...     inputs, target, mask=torch.BoolTensor([[True, True, True, True, True]])
         ... )
         >>> assert output.item()==2.154679536819458, output.item()
         """
 
-        logits_size = input.shape[-1]
+        logits_size = inputs.shape[-1]
         
         # Both unary and binary can be mapped to binary
         if logits_size > 2:
-            loss = self._multi_class(input, target, logits_size, mask=mask)
+            loss = self._multi_class(inputs, target, logits_size, mask=mask)
         else:
-            loss = self._binary_class(input, target, logits_size, mask=mask)
+            loss = self._binary_class(inputs, target, logits_size, mask=mask)
 
-        return {'mean': lambda x: torch.mean(x), 'sum': lambda x: torch.sum(x)}.get(self.reduction, lambda x: x)(loss)
+        return {'mean': torch.mean, 'sum': torch.sum}.get(self.reduction, lambda x: x)(loss)
 
     def _compute(self, flat_input, flat_target):
 
         flat_input = ((1 - flat_input) ** self.alpha) * flat_input
         interection = torch.sum(flat_input * flat_target, -1)
-        
+
         if self.square_denominator:
             denominator = torch.sum(torch.square(flat_input)) + torch.sum(torch.square(flat_target), -1) + self.smooth
         else:
             denominator = flat_input.sum() + flat_target.sum() + self.smooth
-        
+
         nominator = 2 * interection + self.smooth
 
         return 1 - nominator / denominator
 
-    def _multi_class(self, input, target, logits_size, mask=None):
+    def _multi_class(self, inputs, target, logits_size, mask=None):
         # One-VS-Rest multiclass loss function
         # Assume the target is label indices
 
         if self.with_logits:
-            input = F.softmax(input, dim=-1)
+            inputs = F.softmax(inputs, dim=-1)
 
-        input = rearrange(input, "B S C -> (B S) C")
+        inputs = rearrange(inputs, "B S C -> (B S) C")
         target = rearrange(target, "B S -> (B S)")
 
-        flat_input = input  # [-1, C]
+        flat_input = inputs  # [-1, C]
         flat_target = F.one_hot(target, num_classes=logits_size).float()  # [-1, C]
 
         if mask is None:
@@ -195,18 +196,19 @@ class DiceLoss(nn.Module):
 
         return loss
 
-    def _binary_class(self, input, target, logits_size, mask=None):
+    def _binary_class(self, inputs, target, logits_size, mask=None):
 
         if self.with_logits:
             if logits_size == 2:
-                input = F.softmax(input, dim=-1)
+                inputs = F.softmax(inputs, dim=-1)
             else:
-                input = F.sigmoid(input)
+                inputs = F.sigmoid(inputs)
 
         if logits_size == 2:
-            input = input[:, -1]
+            # Only take the probabilities for the positive class
+            inputs = inputs[:, -1]
 
-        flat_input = input.view(-1)
+        flat_input = inputs.view(-1)
         flat_target = target.view(-1).float()
 
         if mask is None:
@@ -244,7 +246,13 @@ class DiceLoss(nn.Module):
         return self._compute(flat_input, flat_target)
 
     def __str__(self):
+        """
+        Returns a readable string representation of the instance.
+        """
         return f"Dice Loss smooth:{self.smooth}, ohem: {self.ohem_ratio}, alpha: {self.alpha}"
 
     def __repr__(self):
-        return str(self)
+        """
+        Returns a complete string representation of the instance, reconstructable with eval.
+        """
+        return f"DiceLoss({self.smooth}, {self.square_denominator}, {self.with_logits}, {self.ohem_ratio}, {self.alpha}, '{self.reduction}')"

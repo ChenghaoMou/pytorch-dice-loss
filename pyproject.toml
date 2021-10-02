@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pytorch-dice-loss"
-version = "0.1.0"
+version = "0.1.1"
 description = "Dice Loss in PyTorch for NLP"
 authors = ["Chenghao Mou <mouchenghao@gmail.com>"]
 license = "Apache License, Version 2.0"

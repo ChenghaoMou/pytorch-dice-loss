@@ -16,8 +16,7 @@ class DiceLoss(nn.Module):
         alpha: float = 0.0,
         reduction: Optional[str] = "mean",
     ) -> None:
-        """
-        A modified Dice Loss for imbalanced data in NLP. Reference: https://arxiv.org/abs/1911.02855;
+        """A modified Dice Loss for imbalanced data in NLP. Reference: https://arxiv.org/abs/1911.02855;
 
         Parameters
         ----------
@@ -36,7 +35,7 @@ class DiceLoss(nn.Module):
             Common parameter for loss computation, one of {"mean", "sum", None}, by default "mean"
         """
         super(DiceLoss, self).__init__()
-        
+
         self.reduction = reduction
         self.with_logits = with_logits
         self.smooth = smooth

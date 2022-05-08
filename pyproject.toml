@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "pytorch-dice-loss"
-version = "0.1.1"
-description = "Dice Loss in PyTorch for NLP"
+name = "pytorch-imbalance-loss"
+version = "0.0.1"
+description = "Imbalance Losses in PyTorch for NLP"
 authors = ["Chenghao Mou <mouchenghao@gmail.com>"]
 license = "Apache License, Version 2.0"
 

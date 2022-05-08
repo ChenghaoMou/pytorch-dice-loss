@@ -1,5 +1,5 @@
 # pytorch-imbalance-loss
-[![PyPI version](https://badge.fury.io/py/pytorch-dice-loss.svg)](https://badge.fury.io/py/pytorch-dice-loss) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/5f80c041543f424ebfe7967a677879d8)](https://www.codacy.com/gh/ChenghaoMou/pytorch-dice-loss/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ChenghaoMou/pytorch-dice-loss&amp;utm_campaign=Badge_Grade)
+[![PyPI version](https://badge.fury.io/py/pytorch-imbalance-loss.svg)](https://badge.fury.io/py/pytorch-imbalance-loss) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/5f80c041543f424ebfe7967a677879d8)](https://www.codacy.com/gh/ChenghaoMou/pytorch-dice-loss/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ChenghaoMou/pytorch-imbalance-loss&amp;utm_campaign=Badge_Grade)
 
 Implementations of loss functions for imbalanced NLP data.
 

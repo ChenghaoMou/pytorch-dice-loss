@@ -9,6 +9,9 @@ license = "Apache License, Version 2.0"
 python = "^3.8"
 torch = "<=1.9.0"
 einops = "^0.3.2"
+torchtyping = "^0.1.4"
+typeguard = "^2.13.3"
+numpy = "^1.22.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"

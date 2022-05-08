@@ -1,6 +1,30 @@
 @article{li2019dice,
-  title={Dice loss for data-imbalanced NLP tasks},
-  author={Li, Xiaoya and Sun, Xiaofei and Meng, Yuxian and Liang, Junjun and Wu, Fei and Li, Jiwei},
-  journal={arXiv preprint arXiv:1911.02855},
-  year={2019}
+  title   = {Dice loss for data-imbalanced NLP tasks},
+  author  = {Li, Xiaoya and Sun, Xiaofei and Meng, Yuxian and Liang, Junjun and Wu, Fei and Li, Jiwei},
+  journal = {arXiv preprint arXiv:1911.02855},
+  year    = {2019}
+}
+
+@article{Lin_Goyal_Girshick_He_Dollár_2018,
+  title        = {Focal Loss for Dense Object Detection},
+  url          = {http://arxiv.org/abs/1708.02002},
+  abstractnote = {The highest accuracy object detectors to date are based on a two-stage approach popularized by R-CNN, where a classifier is applied to a sparse set of candidate object locations. In contrast, one-stage detectors that are applied over a regular, dense sampling of possible object locations have the potential to be faster and simpler, but have trailed the accuracy of two-stage detectors thus far. In this paper, we investigate why this is the case. We discover that the extreme foreground-background class imbalance encountered during training of dense detectors is the central cause. We propose to address this class imbalance by reshaping the standard cross entropy loss such that it down-weights the loss assigned to well-classified examples. Our novel Focal Loss focuses training on a sparse set of hard examples and prevents the vast number of easy negatives from overwhelming the detector during training. To evaluate the effectiveness of our loss, we design and train a simple dense detector we call RetinaNet. Our results show that when trained with the focal loss, RetinaNet is able to match the speed of previous one-stage detectors while surpassing the accuracy of all existing state-of-the-art two-stage detectors. Code is at: https://github.com/facebookresearch/Detectron.},
+  note         = {arXiv: 1708.02002},
+  journal      = {arXiv:1708.02002 [cs]},
+  author       = {Lin, Tsung-Yi and Goyal, Priya and Girshick, Ross and He, Kaiming and Dollár, Piotr},
+  year         = {2018},
+  month        = {Feb}
+}
+
+@article{Yeung_Sala_Schönlieb_Rundo_2022,
+  title        = {Unified Focal loss: Generalising Dice and cross entropy-based losses to handle class imbalanced medical image segmentation},
+  volume       = {95},
+  issn         = {0895-6111},
+  doi          = {https://doi.org/10.1016/j.compmedimag.2021.102026},
+  abstractnote = {Automatic segmentation methods are an important advancement in medical image analysis. Machine learning techniques, and deep neural networks in particular, are the state-of-the-art for most medical image segmentation tasks. Issues with class imbalance pose a significant challenge in medical datasets, with lesions often occupying a considerably smaller volume relative to the background. Loss functions used in the training of deep learning algorithms differ in their robustness to class imbalance, with direct consequences for model convergence. The most commonly used loss functions for segmentation are based on either the cross entropy loss, Dice loss or a combination of the two. We propose the Unified Focal loss, a new hierarchical framework that generalises Dice and cross entropy-based losses for handling class imbalance. We evaluate our proposed loss function on five publicly available, class imbalanced medical imaging datasets: CVC-ClinicDB, Digital Retinal Images for Vessel Extraction (DRIVE), Breast Ultrasound 2017 (BUS2017), Brain Tumour Segmentation 2020 (BraTS20) and Kidney Tumour Segmentation 2019 (KiTS19). We compare our loss function performance against six Dice or cross entropy-based loss functions, across 2D binary, 3D binary and 3D multiclass segmentation tasks, demonstrating that our proposed loss function is robust to class imbalance and consistently outperforms the other loss functions. Source code is available at: https://github.com/mlyg/unified-focal-loss.},
+  note         = {Citation Key: YEUNG2022102026},
+  journal      = {Computerized Medical Imaging and Graphics},
+  author       = {Yeung, Michael and Sala, Evis and Schönlieb, Carola-Bibiane and Rundo, Leonardo},
+  year         = {2022},
+  pages        = {102026}
 }
